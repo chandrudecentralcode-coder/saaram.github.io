@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>சாரம் — இணைப்பு இல்லை</title>
+  <style>
+    :root {
+      --bg: #F5E6D3;
+      --primary: #8B5A2B;
+      --gold: #C9A84C;
+      --text: #3D2B1F;
+      --text-muted: #7A5C42;
+      --font-tamil: 'Noto Serif Tamil', 'Latha', serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-tamil), sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .lamp { font-size: 72px; margin-bottom: 24px; animation: flicker 3s ease-in-out infinite; }
+
+    @keyframes flicker {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.8; transform:scale(0.97); }
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .tagline {
+      font-size: 16px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+
+    .verse {
+      margin: 32px 0;
+      padding: 24px;
+      border-radius: 16px;
+      background: white;
+      border: 1px solid #D4B896;
+      box-shadow: 0 4px 20px rgba(61,43,31,0.1);
+      max-width: 360px;
+    }
+
+    .verse-line {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.8;
+      color: var(--text);
+      display: block;
+    }
+
+    .verse-divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      margin: 12px 0;
+      opacity: 0.6;
+    }
+
+    .verse-exp {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .verse-source {
+      font-size: 12px;
+      color: #A8876A;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .retry-btn {
+      margin-top: 8px;
+      padding: 14px 32px;
+      background: var(--primary);
+      color: #FFF8EF;
+      border: none;
+      border-radius: 100px;
+      font-size: 16px;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .retry-btn:hover { opacity: 0.9; }
+
+    .offline-note {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="lamp">🪔</div>
+  <h1>சாரம்</h1>
+  <p class="tagline">இணைய இணைப்பு இல்லை</p>
+  <p class="tagline" style="font-size:14px">ஆனாலும் ஒரு குறள் படிக்கலாம்...</p>
+
+  <div class="verse">
+    <span class="verse-line">வேண்டுதல் வேண்டாமை இலான்அடி சேர்ந்தார்க்கு</span>
+    <span class="verse-line">யாண்டும் இடும்பை இல</span>
+    <div class="verse-divider"></div>
+    <p class="verse-exp">விருப்பு வெறுப்பு இல்லாத கடவுளின் திருவடிகளை அடைந்தவர்க்கு எங்கும் துன்பம் இல்லை.</p>
+    <p class="verse-source">— திருக்குறள் 4</p>
+  </div>
+
+  <button class="retry-btn" onclick="window.location.reload()">மீண்டும் முயற்சி</button>
+  <p class="offline-note">இணைப்பு வந்ததும் தானாக புதுப்பிக்கப்படும்</p>
+
+  <script>
+    window.addEventListener('online', () => window.location.reload());
+  </script>
+</body>
+</html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ta" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+  <meta name="theme-color" content="#7B0000"/>
+  <meta name="description" content="சாரம் — Tamil Literature, Wisdom & Culture Platform"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="சாரம்"/>
+  <meta property="og:title" content="சாரம் — Tamil Wisdom"/>
+  <meta property="og:description" content="சத்தம் நிறைந்த உலகில் ஒரு அமைதியான இடம்"/>
+  <meta property="og:type" content="website"/>
+  <title>சாரம் | Tamil Wisdom</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="preconnect" href="https://getthirukkural.appspot.com"/>
+</head>
+<body>
+
+<!-- BG PATTERN -->
+<div class="bg-pattern" aria-hidden="true"></div>
+
+<!-- ══ HEADER ══ -->
+<header class="header" id="main-header">
+  <div class="header-inner">
+    <a class="header-logo" href="index.html" aria-label="சாரம் Home">
+      <span class="logo-lamp">🪔</span>
+      <div class="logo-text-wrap">
+        <span class="logo-text">சாரம்</span>
+        <span class="logo-tagline">Tamil Wisdom</span>
+      </div>
+    </a>
+    <div class="header-actions">
+      <span class="online-dot" id="online-dot" title="Online"></span>
+      <button class="icon-btn ripple-host" id="notif-btn" aria-label="அறிவிப்புகள்" style="position:relative">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="notif-badge" id="notif-badge"></span>
+      </button>
+      <button class="icon-btn ripple-host" id="dark-toggle" aria-label="இரவு பயன்முறை">
+        <span id="dark-toggle-icon">🌙</span>
+      </button>
+      <button class="icon-btn ripple-host" id="search-toggle" aria-label="Search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="icon-btn ripple-host" id="bookmarks-toggle" aria-label="என் சாரம்">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </button>
+    </div>
+  </div>
+  <!-- Search Bar -->
+  <div class="search-bar" id="search-bar" hidden>
+    <div class="search-input-wrap">
+      <svg class="search-icon-inner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="search" id="search-input" placeholder="குறள் எண் அல்லது வார்த்தை…" class="search-input" autocomplete="off"/>
+    </div>
+    <button class="search-close ripple-host" id="search-close" aria-label="Close search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ══ MAIN ══ -->
+<main class="main-content" id="main-content">
+
+  <!-- Daily Event Banner (managed by DailyEventBanner class) -->
+  <div class="daily-event-banner" id="daily-event-banner" hidden>
+    <div class="deb-img-wrap" id="deb-img-wrap"></div>
+    <div class="deb-content">
+      <span class="deb-badge" id="deb-badge"></span>
+      <h3 class="deb-title" id="deb-title"></h3>
+      <p class="deb-desc" id="deb-desc"></p>
+    </div>
+    <button class="deb-close" id="deb-close" aria-label="மூடு">×</button>
+  </div>
+
+  <!-- Story Entry Strip -->
+  <section class="story-strip" id="story-strip">
+    <div class="story-entry" id="story-entry-btn" role="button" tabindex="0" aria-label="Today's 5 Stories">
+      <div class="story-ring">
+        <span class="story-lamp">🪔</span>
+      </div>
+      <span class="story-label">இன்றைய<br>5 பதிவுகள்</span>
+    </div>
+    <div class="story-categories-scroll">
+      <div class="story-cat-item" data-cat="kural">
+        <div class="story-cat-ring">📜</div>
+        <span>குறள்</span>
+      </div>
+      <div class="story-cat-item" data-cat="bakthi">
+        <div class="story-cat-ring">🕉️</div>
+        <span>பக்தி</span>
+      </div>
+      <div class="story-cat-item" data-cat="paadal">
+        <div class="story-cat-ring">🎵</div>
+        <span>பாடல்</span>
+      </div>
+      <div class="story-cat-item" data-cat="oakkam">
+        <div class="story-cat-ring">⚡</div>
+        <span>ஊக்கம்</span>
+      </div>
+      <div class="story-cat-item" data-cat="vaazhkai">
+        <div class="story-cat-ring">🌱</div>
+        <span>வாழ்க்கை</span>
+      </div>
+      <div class="story-cat-item" data-cat="architecture">
+        <div class="story-cat-ring">🏛️</div>
+        <span>கோயில்கள்</span>
+      </div>
+      <div class="story-cat-item" data-cat="festival">
+        <div class="story-cat-ring">🎉</div>
+        <span>திருவிழா</span>
+      </div>
+      <div class="story-cat-item" data-cat="dance">
+        <div class="story-cat-ring">💃</div>
+        <span>நடனம்</span>
+      </div>
+      <div class="story-cat-item" data-cat="cuisine">
+        <div class="story-cat-ring">🍛</div>
+        <span>உணவு</span>
+      </div>
+      <div class="story-cat-item" data-cat="temple_art">
+        <div class="story-cat-ring">🎨</div>
+        <span>கலை</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Story Highlights -->
+  <div class="story-highlights" id="story-highlights"></div>
+
+  <!-- Daily Kural -->
+  <section class="daily-kural-section" id="daily-kural-section">
+    <div class="kural-border-ring" aria-hidden="true"></div>
+    <div class="daily-kural-inner">
+      <div class="daily-label">
+        <span class="daily-dot"></span>
+        <span>இன்றைய குறள்</span>
+      </div>
+      <div class="daily-kural-card" id="daily-kural-card">
+        <div class="skeleton-wrap" id="kural-skeleton">
+          <div class="skeleton-line wide"></div>
+          <div class="skeleton-line mid"></div>
+          <div class="skeleton-line narrow"></div>
+        </div>
+      </div>
+      <div class="swipe-hint" aria-hidden="true">
+        <button class="swipe-arrow" id="kural-prev" title="முந்தைய குறள்">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="swipe-label">swipe</span>
+        <button class="swipe-arrow" id="kural-next" title="அடுத்த குறள்">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <div class="daily-actions">
+        <button class="btn-random ripple-host" id="random-kural-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+          சீரற்ற குறள்
+        </button>
+        <button class="btn-favlist ripple-host" id="fav-kural-list-btn">❤️ பிடித்தவை</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trending -->
+  <section class="trending-section" id="trending-section">
+    <div class="trending-header">
+      <span class="trending-fire">🔥</span>
+      <span class="trending-title">இன்று பிரபலம்</span>
+    </div>
+    <div class="trending-chips" id="trending-chips"></div>
+  </section>
+
+  <!-- Mood -->
+  <section class="mood-section" id="mood-section">
+    <p class="mood-prompt">இன்று நீ எப்படி உணர்கிறாய்?</p>
+    <div class="mood-chips" role="group">
+      <button class="mood-chip ripple-host" data-mood="tiredness">😔 சோர்வு</button>
+      <button class="mood-chip ripple-host" data-mood="fear">😨 பயம்</button>
+      <button class="mood-chip ripple-host" data-mood="hope">🌟 நம்பிக்கை</button>
+      <button class="mood-chip ripple-host" data-mood="peace">🕊️ அமைதி</button>
+    </div>
+  </section>
+
+  <!-- Category Nav -->
+  <nav class="category-nav" id="category-nav" role="tablist">
+    <div class="category-tabs-wrap">
+      <div class="category-tabs">
+        <button class="cat-tab active" data-category="all"          role="tab" aria-selected="true">அனைத்தும்</button>
+        <button class="cat-tab"        data-category="kural"        role="tab" aria-selected="false">📜 குறள்</button>
+        <button class="cat-tab"        data-category="bakthi"       role="tab" aria-selected="false">🕉️ பக்தி</button>
+        <button class="cat-tab"        data-category="paadal"       role="tab" aria-selected="false">🎵 பாடல்</button>
+        <button class="cat-tab"        data-category="oakkam"       role="tab" aria-selected="false">⚡ ஊக்கம்</button>
+        <button class="cat-tab"        data-category="vaazhkai"     role="tab" aria-selected="false">🌱 வாழ்க்கை</button>
+        <button class="cat-tab"        data-category="architecture" role="tab" aria-selected="false">🏛️ கோயில்கள்</button>
+        <button class="cat-tab"        data-category="festival"     role="tab" aria-selected="false">🎉 திருவிழா</button>
+        <button class="cat-tab"        data-category="dance"        role="tab" aria-selected="false">💃 நடனம்</button>
+        <button class="cat-tab"        data-category="cuisine"      role="tab" aria-selected="false">🍛 உணவு</button>
+        <button class="cat-tab"        data-category="temple_art"   role="tab" aria-selected="false">🎨 கலை</button>
+      </div>
+      <div class="tab-indicator" id="tab-indicator"></div>
+    </div>
+  </nav>
+
+  <!-- Pull to Refresh -->
+  <div class="ptr-wrap" id="ptr-wrap">
+    <span class="ptr-spinner">🔄</span>
+  </div>
+
+  <!-- Feed Header -->
+  <div class="feed-header">
+    <span class="feed-count" id="feed-count"></span>
+    <button class="view-toggle ripple-host" id="view-toggle" aria-label="காட்சி மாற்று" title="கட்டம் / பட்டியல்">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="view-toggle-icon"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </button>
+  </div>
+
+  <!-- Feed -->
+  <section class="feed" id="feed" role="feed" aria-label="Content Feed"></section>
+
+  <div class="feed-loader" id="feed-loader" hidden>
+    <div class="feed-loader-dots"><span></span><span></span><span></span></div>
+    <span>ஏற்றுகிறோம்…</span>
+  </div>
+  <div class="feed-end" id="feed-end" hidden>
+    <span class="feed-end-lamp">🪔</span>
+    <p>அனைத்தும் படித்தீர்கள்</p>
+    <p class="feed-end-sub">நாளை மேலும் ஞானம் காத்திருக்கும்</p>
+  </div>
+
+</main>
+
+<!-- ══ EXPLORE VIEW (1330 குறள் + நூலகம்) ══ -->
+<section class="explore-view" id="explore-view" hidden>
+  <div class="view-header">
+    <button class="back-btn ripple-host" id="explore-back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h2 class="view-title">ஆய்வு</h2>
+  </div>
+
+  <!-- Explore Tab Bar -->
+  <div class="explore-tabs-bar" role="tablist">
+    <button class="explore-tab active" data-tab="kural1330" role="tab" aria-selected="true">📜 1330 குறள்கள்</button>
+    <button class="explore-tab" data-tab="library" role="tab" aria-selected="false">📚 நூலகம்</button>
+  </div>
+
+  <!-- ── Panel: 1330 Kural Browser ── -->
+  <div class="explore-panel" id="panel-kural1330">
+    <!-- Paal Quick Nav -->
+    <div class="kural-paal-bar">
+      <button class="kural-paal-btn active ripple-host" data-paal="0">⚖️ அறம்<span>1–380</span></button>
+      <button class="kural-paal-btn ripple-host" data-paal="1">👑 பொருள்<span>381–1080</span></button>
+      <button class="kural-paal-btn ripple-host" data-paal="2">💝 காமம்<span>1081–1330</span></button>
+    </div>
+    <!-- Jump + Adhigaram Nav -->
+    <div class="kural-browser-controls">
+      <div class="kural-jump-row">
+        <input type="number" id="kural-jump-input" class="kural-jump-input" min="1" max="1330" placeholder="குறள் எண் (1–1330)"/>
+        <button class="kural-jump-btn ripple-host" id="kural-jump-go">செல் →</button>
+      </div>
+      <div class="kural-adhigaram-nav">
+        <button class="kural-nav-arrow ripple-host" id="adhigaram-prev" aria-label="முந்தைய அதிகாரம்">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="kural-adhigaram-info">
+          <span class="kural-adhigaram-num" id="adhigaram-num">அதிகாரம் 1</span>
+          <span class="kural-adhigaram-name" id="adhigaram-name">கடவுள் வாழ்த்து</span>
+          <span class="kural-adhigaram-range" id="adhigaram-range">குறள் 1–10</span>
+        </div>
+        <button class="kural-nav-arrow ripple-host" id="adhigaram-next" aria-label="அடுத்த அதிகாரம்">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Kural Cards -->
+    <div class="kural-browser-list" id="kural-browser-list">
+      <div class="kural-browser-loading">
+        <div class="feed-loader-dots"><span></span><span></span><span></span></div>
+        <span>குறள்கள் ஏற்றுகிறோம்…</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Panel: Project Madurai Library ── -->
+  <div class="explore-panel" id="panel-library" hidden>
+    <div class="library-toolbar">
+      <div class="library-search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" id="library-search" class="library-search-input" placeholder="நூல் / ஆசிரியர் தேடு…" autocomplete="off"/>
+      </div>
+    </div>
+    <div class="library-genre-scroll" id="library-genre-scroll"></div>
+    <div class="library-stats-row">
+      <span class="library-stats-icon">📚</span>
+      <span class="library-stats-text" id="library-stats">Project Madurai நூல்கள்</span>
+    </div>
+    <div class="library-list" id="library-list">
+      <div class="kural-browser-loading">
+        <div class="feed-loader-dots"><span></span><span></span><span></span></div>
+        <span>நூலகம் ஏற்றுகிறோம்…</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BOOKMARKS VIEW ══ -->
+<section class="bookmarks-view" id="bookmarks-view" hidden>
+  <div class="view-header">
+    <button class="back-btn ripple-host" id="bookmarks-back">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h2 class="view-title">என் சாரம்</h2>
+  </div>
+  <div class="bookmarks-feed" id="bookmarks-feed"></div>
+  <div class="empty-state" id="bookmarks-empty" hidden>
+    <div class="empty-lamp">📌</div>
+    <p>இன்னும் எதுவும் சேமிக்கவில்லை</p>
+    <p class="empty-sub">பிடித்த பதிவுகளில் 🔖 தட்டவும்</p>
+  </div>
+</section>
+
+<!-- ══ MODAL ══ -->
+<div class="modal-overlay" id="modal-overlay" hidden>
+  <div class="modal" id="kural-modal" role="dialog" aria-modal="true">
+    <div class="modal-handle"></div>
+    <button class="modal-close ripple-host" id="modal-close" aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-content" id="modal-content"></div>
+  </div>
+</div>
+
+<!-- ══ QUOTE GENERATOR MODAL ══ -->
+<div class="modal-overlay" id="quote-overlay" hidden>
+  <div class="modal quote-modal" id="quote-modal" role="dialog" aria-modal="true">
+    <div class="modal-handle"></div>
+    <button class="modal-close ripple-host" id="quote-close" aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <p class="quote-modal-title">படம் உருவாக்கு</p>
+    <canvas id="quote-canvas" class="quote-canvas"></canvas>
+    <div class="quote-actions">
+      <button class="quote-btn-dl ripple-host" id="quote-download">⬇️ பதிவிறக்கு</button>
+      <button class="quote-btn-share ripple-host" id="quote-share">📤 பகிர்</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ══ MINDFUL PAUSE ══ -->
+<div class="mindful-pause" id="mindful-pause" hidden>
+  <div class="mindful-inner">
+    <div class="mindful-breath-ring"><div class="mindful-breath-ring-inner"></div></div>
+    <span class="mindful-icon">🕯️</span>
+    <p class="mindful-text">ஒரு நிமிடம் நிறுத்துங்கள்</p>
+    <p class="mindful-sub">5 பதிவுகள் பார்த்தீர்கள்<br>கொஞ்சம் சிந்தியுங்கள்</p>
+    <button class="mindful-btn ripple-host" id="mindful-continue">தொடரவும் →</button>
+  </div>
+</div>
+
+<!-- ══ BOTTOM NAV ══ -->
+<nav class="bottom-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-active-pill" id="nav-active-pill" aria-hidden="true"></div>
+  <button class="nav-btn active" data-view="home" aria-label="முகப்பு">
+    <svg class="nav-icon" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>முகப்பு</span>
+  </button>
+  <button class="nav-btn" data-view="stories" aria-label="கதைகள்">
+    <svg class="nav-icon" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    <span>கதைகள்</span>
+  </button>
+  <button class="nav-btn" data-view="explore" aria-label="நூலகம்">
+    <svg class="nav-icon" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    <span>நூலகம்</span>
+  </button>
+  <button class="nav-btn" data-view="bookmarks" aria-label="சேமிப்பு">
+    <svg class="nav-icon" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    <span>சேமிப்பு</span>
+  </button>
+</nav>
+
+<!-- ══ SHARE SHEET ══ -->
+<div class="share-sheet" id="share-sheet" hidden>
+  <div class="share-sheet-backdrop" id="share-sheet-backdrop"></div>
+  <div class="share-sheet-inner">
+    <div class="modal-handle"></div>
+    <p class="share-sheet-title">பகிர்க / Share</p>
+    <div class="share-app-grid" id="share-app-grid">
+      <div class="share-app-item" id="share-wa">
+        <div class="share-app-icon" style="background:#25D366">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </div>
+        <span>WhatsApp</span>
+      </div>
+      <div class="share-app-item" id="share-tw">
+        <div class="share-app-icon" style="background:#000">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.741l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </div>
+        <span>Twitter/X</span>
+      </div>
+      <div class="share-app-item" id="share-fb">
+        <div class="share-app-icon" style="background:#1877F2">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </div>
+        <span>Facebook</span>
+      </div>
+      <div class="share-app-item" id="share-copy">
+        <div class="share-app-icon" style="background:var(--border)">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </div>
+        <span>நகலெடு</span>
+      </div>
+      <div class="share-app-item" id="share-native">
+        <div class="share-app-icon" style="background:var(--maroon)">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </div>
+        <span>மேலும்</span>
+      </div>
+    </div>
+    <button class="share-sheet-cancel ripple-host" id="share-sheet-cancel">ரத்து செய்</button>
+  </div>
+</div>
+
+<!-- ══ SCROLL TO TOP FAB ══ -->
+<button class="scroll-top-fab" id="scroll-top-fab" aria-label="மேலே செல்">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<script src="library-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

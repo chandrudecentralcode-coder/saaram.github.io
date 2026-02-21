@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="ta" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="robots" content="noindex,nofollow"/>
+  <title>சாரம் Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --maroon:    #7B0000;
+      --maroon-dk: #5C0000;
+      --gold:      #C9A84C;
+      --gold-lt:   #E8C97A;
+      --cream:     #FDF5E6;
+      --cream-dk:  #F0E0C0;
+      --card:      #FFFDF7;
+      --text:      #2C1810;
+      --text-m:    #6B4422;
+      --text-l:    #9A6440;
+      --border:    #D4B896;
+      --border-lt: #E8D5BA;
+      --success:   #2E7D32;
+      --error:     #C62828;
+      --sidebar-w: 220px;
+      --f-tamil:   'Hind Madurai','Noto Serif Tamil',serif;
+      --f-ui:      -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      font-family: var(--f-ui);
+      background:  var(--cream);
+      color:       var(--text);
+      display:     flex;
+      min-height:  100vh;
+    }
+
+    /* ── LOGIN SCREEN ── */
+    #login-screen {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, var(--maroon-dk) 0%, var(--maroon) 60%, #9B2020 100%);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999;
+    }
+    .login-card {
+      background: var(--cream);
+      border-radius: 20px;
+      padding: 40px 36px;
+      width: min(380px, 92vw);
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
+    .login-lamp { font-size: 48px; margin-bottom: 12px; }
+    .login-title {
+      font-family: var(--f-tamil);
+      font-size: 26px; font-weight: 700;
+      color: var(--maroon); margin-bottom: 4px;
+    }
+    .login-sub { font-size: 13px; color: var(--text-l); margin-bottom: 28px; }
+    .login-field {
+      width: 100%; padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px; font-family: var(--f-ui);
+      background: white; color: var(--text);
+      margin-bottom: 16px;
+      transition: border-color .2s;
+    }
+    .login-field:focus { outline: none; border-color: var(--maroon); }
+    .login-btn {
+      width: 100%; padding: 13px;
+      background: var(--maroon);
+      color: #FDF5E6;
+      border: none; border-radius: 10px;
+      font-size: 16px; font-weight: 700;
+      font-family: var(--f-tamil);
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+    }
+    .login-btn:hover  { background: var(--maroon-dk); }
+    .login-btn:active { transform: scale(.97); }
+    .login-error {
+      color: var(--error); font-size: 13px;
+      margin-top: 10px; display: none;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: linear-gradient(180deg, var(--maroon-dk) 0%, var(--maroon) 100%);
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0;
+      z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sidebar-logo-lamp { font-size: 26px; }
+    .sidebar-logo-text { font-family: var(--f-tamil); font-size: 20px; font-weight: 700; color: var(--gold); }
+    .sidebar-logo-sub  { font-size: 10px; color: rgba(255,255,255,.5); letter-spacing: .06em; text-transform: uppercase; }
+    .sidebar-nav { padding: 16px 12px; flex: 1; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      color: rgba(255,255,255,.7);
+      font-size: 14px; font-weight: 500;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+      margin-bottom: 4px;
+      border: none; background: transparent; width: 100%; text-align: left;
+    }
+    .nav-item:hover  { background: rgba(255,255,255,.1); color: white; }
+    .nav-item.active { background: var(--gold); color: var(--maroon-dk); font-weight: 700; }
+    .nav-item-icon { font-size: 16px; width: 20px; text-align: center; }
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,.12);
+      font-size: 11px; color: rgba(255,255,255,.4);
+    }
+    .sidebar-footer a { color: var(--gold-lt); text-decoration: none; }
+
+    /* ── MAIN CONTENT ── */
+    .main-wrap {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex; flex-direction: column;
+      min-height: 100vh;
+    }
+    .topbar {
+      background: white;
+      border-bottom: 1px solid var(--border-lt);
+      padding: 14px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 2px 8px rgba(44,26,14,.06);
+    }
+    .topbar-title { font-size: 18px; font-weight: 700; color: var(--text); font-family: var(--f-tamil); }
+    .topbar-right { display: flex; align-items: center; gap: 14px; }
+    .status-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--cream); border: 1px solid var(--border);
+      padding: 6px 12px; border-radius: 100px; font-size: 12px; color: var(--text-m);
+    }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; }
+    .status-dot.connected { background: var(--success); }
+    .logout-btn {
+      background: none; border: 1px solid var(--border);
+      padding: 6px 14px; border-radius: 8px;
+      font-size: 13px; cursor: pointer; color: var(--text-m);
+      transition: all .2s;
+    }
+    .logout-btn:hover { border-color: var(--maroon); color: var(--maroon); }
+
+    /* ── SECTIONS ── */
+    .section { display: none; padding: 28px; flex: 1; }
+    .section.active { display: block; }
+
+    /* ── STAT CARDS ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 16px; margin-bottom: 28px;
+    }
+    .stat-card {
+      background: white; border: 1.5px solid var(--border-lt);
+      border-radius: 14px; padding: 20px 18px;
+      box-shadow: 0 2px 8px rgba(44,26,14,.08);
+      transition: box-shadow .2s, transform .15s;
+    }
+    .stat-card:hover { box-shadow: 0 6px 20px rgba(44,26,14,.14); transform: translateY(-2px); }
+    .stat-icon { font-size: 28px; margin-bottom: 10px; }
+    .stat-num  { font-size: 32px; font-weight: 700; color: var(--maroon); line-height: 1; }
+    .stat-lbl  { font-size: 12px; color: var(--text-l); margin-top: 4px; font-family: var(--f-tamil); }
+
+    /* ── TODAY EVENT CARD ── */
+    .today-event-card {
+      background: linear-gradient(135deg, var(--maroon) 0%, #9B2020 100%);
+      border-radius: 14px; padding: 20px 24px;
+      color: white; margin-bottom: 28px;
+    }
+    .today-event-card h3 { font-family: var(--f-tamil); font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .today-event-card p  { font-size: 13px; opacity: .85; }
+    .today-event-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--gold); color: var(--maroon-dk);
+      padding: 4px 10px; border-radius: 100px;
+      font-size: 11px; font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .section-hdr h2 {
+      font-family: var(--f-tamil); font-size: 20px; font-weight: 700; color: var(--text);
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      padding: 9px 18px; border-radius: 9px;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; border: none;
+      transition: all .2s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-primary { background: var(--maroon); color: white; }
+    .btn-primary:hover { background: var(--maroon-dk); }
+    .btn-gold { background: var(--gold); color: var(--maroon-dk); }
+    .btn-gold:hover { background: var(--gold-lt); }
+    .btn-outline { background: white; color: var(--maroon); border: 1.5px solid var(--maroon); }
+    .btn-outline:hover { background: var(--cream); }
+    .btn-danger { background: var(--error); color: white; }
+    .btn-danger:hover { background: #B71C1C; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 7px; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ── TABLE ── */
+    .table-wrap { background: white; border-radius: 14px; border: 1.5px solid var(--border-lt); overflow: hidden; box-shadow: 0 2px 8px rgba(44,26,14,.07); }
+    .table-toolbar { padding: 14px 16px; border-bottom: 1px solid var(--border-lt); display: flex; align-items: center; gap: 10px; }
+    .table-search {
+      flex: 1; padding: 8px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px; font-size: 14px;
+      transition: border-color .2s;
+    }
+    .table-search:focus { outline: none; border-color: var(--maroon); }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      background: var(--cream); color: var(--text-m);
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+      padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border-lt);
+    }
+    td { padding: 10px 14px; font-size: 13px; border-bottom: 1px solid var(--border-lt); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--cream); }
+    .td-title { font-family: var(--f-tamil); font-weight: 600; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .td-cat  { display: inline-flex; align-items: center; gap: 4px; background: var(--cream-dk); padding: 3px 9px; border-radius: 100px; font-size: 11px; font-weight: 700; color: var(--maroon); }
+    .td-ai   { display: inline-block; background: linear-gradient(135deg,#7B0000,#C9A84C); color: white; padding: 2px 8px; border-radius: 100px; font-size: 10px; font-weight: 700; }
+    .td-actions { display: flex; gap: 6px; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.5); z-index: 500;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white; border-radius: 18px;
+      width: min(560px, 100%); max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,.2);
+    }
+    .modal-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border-lt);
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: var(--f-tamil); font-size: 17px; font-weight: 700;
+      position: sticky; top: 0; background: white; z-index: 1;
+    }
+    .modal-close-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-l); line-height: 1; }
+    .modal-body { padding: 20px 24px 24px; }
+
+    /* ── FORM FIELDS ── */
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--text-m); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px; font-size: 14px;
+      font-family: var(--f-tamil);
+      background: white; color: var(--text);
+      transition: border-color .2s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none; border-color: var(--maroon);
+    }
+    .form-textarea { min-height: 80px; resize: vertical; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-hint { font-size: 11px; color: var(--text-l); margin-top: 4px; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+
+    /* ── AI STUDIO ── */
+    .ai-studio-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .ai-panel { background: white; border: 1.5px solid var(--border-lt); border-radius: 14px; padding: 20px; box-shadow: 0 2px 8px rgba(44,26,14,.07); }
+    .ai-panel h3 { font-family: var(--f-tamil); font-size: 15px; font-weight: 700; margin-bottom: 14px; color: var(--maroon); }
+    .ai-img-preview {
+      width: 100%; aspect-ratio: 1/1;
+      background: var(--cream-dk);
+      border-radius: 12px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px dashed var(--border);
+      margin-bottom: 14px;
+    }
+    .ai-img-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .ai-placeholder { text-align: center; color: var(--text-l); }
+    .ai-placeholder-icon { font-size: 40px; margin-bottom: 8px; }
+    .ai-placeholder p { font-size: 13px; }
+    .generating-overlay {
+      position: absolute; inset: 0;
+      background: rgba(123,0,0,.85);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: white; border-radius: 12px;
+      display: none;
+    }
+    .spinner { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,.3); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; margin-bottom: 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── EVENTS LIST ── */
+    .events-list { display: flex; flex-direction: column; gap: 10px; }
+    .event-card {
+      background: white; border: 1.5px solid var(--border-lt);
+      border-radius: 12px; padding: 14px 16px;
+      display: flex; align-items: flex-start; gap: 14px;
+      box-shadow: 0 1px 4px rgba(44,26,14,.06);
+    }
+    .event-card.today { border-color: var(--gold); background: linear-gradient(135deg, #FFF8E7, white); }
+    .event-date { font-size: 11px; font-weight: 700; color: var(--maroon); background: var(--cream-dk); padding: 4px 10px; border-radius: 8px; white-space: nowrap; }
+    .event-body { flex: 1; }
+    .event-title { font-family: var(--f-tamil); font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+    .event-desc  { font-size: 12px; color: var(--text-l); }
+    .event-actions { display: flex; gap: 6px; align-items: center; }
+
+    /* ── IMPORT SECTION ── */
+    .import-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .import-panel { background: white; border: 1.5px solid var(--border-lt); border-radius: 14px; padding: 20px; }
+    .import-panel h3 { font-family: var(--f-tamil); font-size: 15px; font-weight: 700; margin-bottom: 14px; color: var(--maroon); }
+    .import-panel p  { font-size: 13px; color: var(--text-m); margin-bottom: 14px; line-height: 1.6; }
+    .import-result { margin-top: 14px; padding: 12px; border-radius: 8px; font-size: 13px; display: none; }
+    .import-result.success { background: #E8F5E9; color: var(--success); border: 1px solid #A5D6A7; }
+    .import-result.error   { background: #FFEBEE; color: var(--error);   border: 1px solid #FFCDD2; }
+
+    /* ── SETTINGS ── */
+    .settings-wrap { display: flex; flex-direction: column; gap: 20px; max-width: 600px; }
+    .settings-card { background: white; border: 1.5px solid var(--border-lt); border-radius: 14px; padding: 22px; box-shadow: 0 2px 8px rgba(44,26,14,.07); }
+    .settings-card h3 { font-family: var(--f-tamil); font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--maroon); }
+    .setup-steps { counter-reset: step; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .setup-steps li {
+      counter-increment: step;
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 13px; color: var(--text-m); line-height: 1.6;
+    }
+    .setup-steps li::before {
+      content: counter(step);
+      min-width: 24px; height: 24px;
+      background: var(--maroon); color: white;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; margin-top: 1px;
+    }
+
+    /* ── TOAST ── */
+    #admin-toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      background: var(--text); color: white;
+      padding: 10px 20px; border-radius: 100px;
+      font-size: 14px; font-family: var(--f-tamil);
+      box-shadow: 0 4px 20px rgba(0,0,0,.25);
+      transition: opacity .3s; opacity: 0; pointer-events: none;
+      z-index: 9000; white-space: nowrap;
+    }
+    #admin-toast.show { opacity: 1; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); transition: transform .3s; }
+      .sidebar.open { transform: none; }
+      .main-wrap { margin-left: 0; }
+      .ai-studio-wrap, .import-wrap, .form-row { grid-template-columns: 1fr; }
+      .menu-toggle { display: flex !important; }
+      table { display: block; overflow-x: auto; }
+    }
+    .menu-toggle {
+      display: none; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--cream); border: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--text-l); }
+    .empty-state-icon { font-size: 48px; margin-bottom: 14px; }
+    .empty-state p { font-family: var(--f-tamil); font-size: 15px; }
+
+    /* ── PAGINATION ── */
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; }
+    .page-btn { padding: 7px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: white; font-size: 13px; cursor: pointer; transition: all .2s; }
+    .page-btn.active { background: var(--maroon); color: white; border-color: var(--maroon); }
+    .page-btn:hover:not(.active) { border-color: var(--maroon); color: var(--maroon); }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-lamp">🪔</div>
+    <div class="login-title">சாரம் Admin</div>
+    <div class="login-sub">Content Management Panel</div>
+    <input type="password" id="login-pwd" class="login-field" placeholder="கடவுச்சொல் உள்ளிடுக…" autocomplete="current-password"/>
+    <button class="login-btn" id="login-btn">உள்நுழை →</button>
+    <div class="login-error" id="login-error">தவறான கடவுச்சொல். மீண்டும் முயற்சிக்கவும்.</div>
+  </div>
+</div>
+
+<!-- ── SIDEBAR ── -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-lamp">🪔</div>
+    <div>
+      <div class="sidebar-logo-text">சாரம்</div>
+      <div class="sidebar-logo-sub">Admin Panel</div>
+    </div>
+  </div>
+  <div class="sidebar-nav">
+    <button class="nav-item active" data-section="dashboard">
+      <span class="nav-item-icon">📊</span> Dashboard
+    </button>
+    <button class="nav-item" data-section="posts">
+      <span class="nav-item-icon">📝</span> பதிவுகள்
+    </button>
+    <button class="nav-item" data-section="ai-studio">
+      <span class="nav-item-icon">🤖</span> AI Studio
+    </button>
+    <button class="nav-item" data-section="events">
+      <span class="nav-item-icon">📅</span> நிகழ்வுகள்
+    </button>
+    <button class="nav-item" data-section="import">
+      <span class="nav-item-icon">📥</span> இறக்குமதி
+    </button>
+    <button class="nav-item" data-section="settings">
+      <span class="nav-item-icon">⚙️</span> அமைப்புகள்
+    </button>
+  </div>
+  <div class="sidebar-footer">
+    சாரம் v1.0 · <a href="index.html">முகப்பு →</a>
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<div class="main-wrap" id="main-wrap">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="menu-toggle" id="menu-toggle">☰</button>
+      <span class="topbar-title" id="topbar-title">Dashboard</span>
+    </div>
+    <div class="topbar-right">
+      <div class="status-pill">
+        <div class="status-dot" id="conn-dot"></div>
+        <span id="conn-label">இணைக்கவில்லை</span>
+      </div>
+      <button class="logout-btn" id="logout-btn">வெளியேறு</button>
+    </div>
+  </div>
+
+  <!-- ════ DASHBOARD ════ -->
+  <div class="section active" id="section-dashboard">
+    <div class="stat-grid" id="stat-grid">
+      <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-num" id="stat-posts">—</div><div class="stat-lbl">மொத்த பதிவுகள்</div></div>
+      <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num" id="stat-events">—</div><div class="stat-lbl">நிகழ்வுகள்</div></div>
+      <div class="stat-card"><div class="stat-icon">🤖</div><div class="stat-num" id="stat-ai">—</div><div class="stat-lbl">AI படங்கள்</div></div>
+      <div class="stat-card"><div class="stat-icon">🪔</div><div class="stat-num" id="stat-local">0</div><div class="stat-lbl">உள்ளூர் DB</div></div>
+    </div>
+    <div class="today-event-card" id="today-event-card">
+      <div class="today-event-badge">📅 இன்று</div>
+      <h3 id="today-event-title">ஏற்றுகிறோம்…</h3>
+      <p  id="today-event-desc"></p>
+    </div>
+    <div class="section-hdr">
+      <h2>சமீபத்திய பதிவுகள்</h2>
+      <button class="btn btn-outline btn-sm" onclick="switchSection('posts')">அனைத்தும் பார்</button>
+    </div>
+    <div id="recent-posts-wrap"></div>
+  </div>
+
+  <!-- ════ POSTS ════ -->
+  <div class="section" id="section-posts">
+    <div class="section-hdr">
+      <h2>பதிவுகள் நிர்வாகம்</h2>
+      <button class="btn btn-primary" id="add-post-btn">+ புதிய பதிவு</button>
+    </div>
+    <div class="table-wrap">
+      <div class="table-toolbar">
+        <input type="search" class="table-search" id="posts-search" placeholder="தேடு — தலைப்பு, வகை…"/>
+        <button class="btn btn-outline btn-sm" id="posts-refresh-btn">🔄 புதுப்பி</button>
+      </div>
+      <div id="posts-table-wrap">
+        <div class="empty-state"><div class="empty-state-icon">📭</div><p>பதிவுகள் ஏற்றுகிறோம்…</p></div>
+      </div>
+    </div>
+    <div class="pagination" id="posts-pagination"></div>
+  </div>
+
+  <!-- ════ AI STUDIO ════ -->
+  <div class="section" id="section-ai-studio">
+    <div class="section-hdr"><h2>AI படம் உருவாக்கு</h2></div>
+    <div class="ai-studio-wrap">
+      <div class="ai-panel">
+        <h3>✍️ உள்ளீடு</h3>
+        <div class="form-group">
+          <label class="form-label">தமிழ் வரிகள் / தலைப்பு</label>
+          <textarea class="form-textarea" id="ai-verse-input" rows="4" placeholder="உதாரணம்: அகர முதல எழுத்தெல்லாம் ஆதி பகவன் முதற்றே உலகு"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">படம் பாணி</label>
+          <select class="form-select" id="ai-style-select">
+            <option value="traditional">Traditional Tamil temple mural</option>
+            <option value="modern">Modern digital Tamil art</option>
+            <option value="watercolor">Watercolor Tamil art</option>
+            <option value="minimalist">Minimalist Tamil art</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">பதிவில் சேர்க்க (விருப்பம்)</label>
+          <select class="form-select" id="ai-save-post">
+            <option value="">— பதிவு தேர்வு —</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-gold" id="ai-generate-btn" style="flex:1">✨ உருவாக்கு</button>
+          <button class="btn btn-primary btn-sm" id="ai-caption-btn">📝 விளக்கம்</button>
+        </div>
+        <div id="ai-caption-result" style="margin-top:12px;padding:12px;background:var(--cream);border-radius:10px;font-family:var(--f-tamil);font-size:14px;display:none;line-height:1.7"></div>
+      </div>
+      <div class="ai-panel">
+        <h3>🖼️ வெளியீடு</h3>
+        <div class="ai-img-preview" id="ai-img-preview" style="position:relative">
+          <div class="ai-placeholder" id="ai-placeholder">
+            <div class="ai-placeholder-icon">🎨</div>
+            <p>இடதுபுறம் உரை உள்ளிட்டு<br>உருவாக்கு</p>
+          </div>
+          <img id="ai-result-img" style="display:none" alt="Generated image"/>
+          <div class="generating-overlay" id="generating-overlay">
+            <div class="spinner"></div>
+            <p>Gemini AI உருவாக்குகிறது…</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px" id="ai-img-actions" style="display:none">
+          <button class="btn btn-outline btn-sm" id="ai-download-btn" style="flex:1">⬇️ பதிவிறக்கு</button>
+          <button class="btn btn-primary btn-sm" id="ai-use-btn" style="flex:1">✅ பதிவில் சேர்</button>
+        </div>
+        <div id="ai-img-url" style="margin-top:10px;font-size:11px;color:var(--text-l);word-break:break-all;display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ EVENTS ════ -->
+  <div class="section" id="section-events">
+    <div class="section-hdr">
+      <h2>தமிழ் நிகழ்வுகள்</h2>
+      <button class="btn btn-primary" id="add-event-btn">+ புதிய நிகழ்வு</button>
+    </div>
+    <div class="events-list" id="events-list">
+      <div class="empty-state"><div class="empty-state-icon">📅</div><p>நிகழ்வுகள் ஏற்றுகிறோம்…</p></div>
+    </div>
+  </div>
+
+  <!-- ════ IMPORT ════ -->
+  <div class="section" id="section-import">
+    <div class="section-hdr"><h2>உள்ளடக்கம் இறக்குமதி</h2></div>
+    <div class="import-wrap">
+      <div class="import-panel">
+        <h3>📚 உள்ளூர் DB இறக்குமதி</h3>
+        <p>app.js இல் உள்ள அனைத்து CONTENT_DB பதிவுகளையும் Google Sheets-க்கு மாற்றவும். ஒரு முறை மட்டுமே செய்யவும்.</p>
+        <button class="btn btn-gold" id="import-local-btn">📤 Local DB இறக்குமதி</button>
+        <div class="import-result" id="import-local-result"></div>
+      </div>
+      <div class="import-panel">
+        <h3>📋 JSON இறக்குமதி</h3>
+        <p>JSON வடிவத்தில் பதிவுகளை ஒட்டுக. <code>[{id, category, verse, ...}]</code> வடிவமைப்பு.</p>
+        <textarea class="form-textarea" id="import-json-input" rows="8" placeholder='[{"id":200,"category":"kural","verse":["..."],...}]'></textarea>
+        <div style="margin-top:10px">
+          <button class="btn btn-primary" id="import-json-btn">📥 இறக்குமதி</button>
+        </div>
+        <div class="import-result" id="import-json-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ SETTINGS ════ -->
+  <div class="section" id="section-settings">
+    <div class="settings-wrap">
+      <div class="settings-card">
+        <h3>🔗 Apps Script இணைப்பு</h3>
+        <div class="form-group">
+          <label class="form-label">Web App URL</label>
+          <input type="url" class="form-input" id="settings-url" placeholder="https://script.google.com/macros/s/.../exec"/>
+          <div class="form-hint">Google Apps Script → Deploy → Web App → Copy URL</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Admin கடவுச்சொல்</label>
+          <input type="password" class="form-input" id="settings-pwd" placeholder="புதிய கடவுச்சொல்…"/>
+          <div class="form-hint">Code.gs-ல் ADMIN_PASSWORD மாற்றிய பிறகு இங்கே புதுப்பிக்கவும்</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">இயல்பு படம் பாணி</label>
+          <select class="form-select" id="settings-style">
+            <option value="traditional">Traditional Tamil temple mural</option>
+            <option value="modern">Modern digital Tamil art</option>
+            <option value="watercolor">Watercolor Tamil art</option>
+            <option value="minimalist">Minimalist Tamil art</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-primary" id="settings-save-btn">💾 சேமி</button>
+          <button class="btn btn-outline" id="settings-test-btn">🔌 இணைப்பு சோதனை</button>
+          <button class="btn btn-gold" id="settings-setup-btn">⚙️ Sheets அமை</button>
+        </div>
+        <div id="settings-test-result" style="margin-top:12px;font-size:13px;color:var(--text-m);display:none"></div>
+      </div>
+
+      <div class="settings-card">
+        <h3>📋 அமைப்பு வழிமுறைகள்</h3>
+        <ol class="setup-steps">
+          <li>script.google.com → புதிய திட்டம் → Code.gs ஒட்டவும்</li>
+          <li>Google Sheet உருவாக்கி Sheet ID நகலெடுக்கவும் (URL-ல் உள்ளது)</li>
+          <li>Code.gs-ல் SHEET_ID மற்றும் GEMINI_API_KEY அமைக்கவும்</li>
+          <li>Deploy → Web App → Execute: Me, Access: Anyone → Deploy</li>
+          <li>Web App URL-ஐ மேலே ஒட்டி சேமிக்கவும்</li>
+          <li>"Sheets அமை" பொத்தானை அழுத்தவும் (ஒரே ஒரு முறை)</li>
+          <li>"Local DB இறக்குமதி" செய்து தொடங்கவும்</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── POST MODAL ── -->
+<div class="modal-overlay" id="post-modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span id="post-modal-title">புதிய பதிவு</span>
+      <button class="modal-close-btn" onclick="closePostModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="post-modal-id"/>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">வகை</label>
+          <select class="form-select" id="post-cat">
+            <option value="kural">📜 குறள்</option>
+            <option value="bakthi">🕉️ பக்தி</option>
+            <option value="paadal">🎵 பாடல்</option>
+            <option value="oakkam">⚡ ஊக்கம்</option>
+            <option value="vaazhkai">🌱 வாழ்க்கை</option>
+            <option value="architecture">🏛️ கோயில்கள்</option>
+            <option value="festival">🎉 திருவிழா</option>
+            <option value="dance">💃 நடனம்</option>
+            <option value="cuisine">🍛 உணவு</option>
+            <option value="temple_art">🎨 கலை</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">தலைப்பு</label>
+          <input type="text" class="form-input" id="post-title" placeholder="பதிவின் தலைப்பு"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">வரிகள் (ஒவ்வொரு வரியும் || ஆல் பிரிக்கவும்)</label>
+        <textarea class="form-textarea" id="post-verse" placeholder="அகர முதல எழுத்தெல்லாம் ஆதி||பகவன் முதற்றே உலகு" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">விளக்கம்</label>
+        <textarea class="form-textarea" id="post-explanation" rows="3" placeholder="பதிவின் விளக்கம்…"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">மூலம்</label>
+          <input type="text" class="form-input" id="post-source" placeholder="குறள் 1 — கடவுள் வாழ்த்து"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">குறிச்சொற்கள்</label>
+          <input type="text" class="form-input" id="post-tags" placeholder="wisdom, devotion, love"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">படம் URL (விருப்பம்)</label>
+        <input type="url" class="form-input" id="post-image" placeholder="https://…"/>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closePostModal()">ரத்து</button>
+        <button class="btn btn-gold" id="post-generate-img-btn">🤖 AI படம்</button>
+        <button class="btn btn-primary" id="post-save-btn">💾 சேமி</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── EVENT MODAL ── -->
+<div class="modal-overlay" id="event-modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span id="event-modal-title">புதிய நிகழ்வு</span>
+      <button class="modal-close-btn" onclick="closeEventModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">தேதி (MM-DD)</label>
+          <input type="text" class="form-input" id="event-date" placeholder="01-14"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">வகை</label>
+          <select class="form-select" id="event-cat">
+            <option value="festival">🎉 திருவிழா</option>
+            <option value="kural">📜 குறள்</option>
+            <option value="bakthi">🕉️ பக்தி</option>
+            <option value="oakkam">⚡ ஊக்கம்</option>
+            <option value="vaazhkai">🌱 வாழ்க்கை</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">தமிழ் தலைப்பு</label>
+          <input type="text" class="form-input" id="event-title-ta" placeholder="தை பொங்கல்"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">ஆங்கில தலைப்பு</label>
+          <input type="text" class="form-input" id="event-title-en" placeholder="Thai Pongal"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">விளக்கம்</label>
+        <textarea class="form-textarea" id="event-desc" rows="2" placeholder="நிகழ்வின் சிறு விளக்கம்…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">AI படம் prompt (ஆங்கிலம்)</label>
+        <input type="text" class="form-input" id="event-ai-prompt" placeholder="Pongal harvest festival Tamil Nadu traditional art"/>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeEventModal()">ரத்து</button>
+        <button class="btn btn-primary" id="event-save-btn">💾 சேமி</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div id="admin-toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   சாரம் ADMIN PANEL — JavaScript
+   ═══════════════════════════════════════════════════ */
+
+// ── STATE ──────────────────────────────────────────
+let SCRIPT_URL   = localStorage.getItem('saram_admin_url')  || '';
+let ADMIN_PWD    = localStorage.getItem('saram_admin_pwd')  || 'saram@admin2024';
+let IMG_STYLE    = localStorage.getItem('saram_img_style')  || 'traditional';
+let allPosts     = [];
+let allEvents    = [];
+let currentPage  = 1;
+const PAGE_SIZE  = 15;
+let aiResultUrl  = '';
+let editingPost  = null;
+
+// ── AUTH ───────────────────────────────────────────
+function checkAuth() {
+  const stored = localStorage.getItem('saram_admin_auth');
+  if (stored === 'true') { showApp(); return; }
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+document.getElementById('login-btn').addEventListener('click', doLogin);
+document.getElementById('login-pwd').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+async function doLogin() {
+  const pwd = document.getElementById('login-pwd').value.trim();
+  if (!pwd) return;
+  // Verify against Apps Script (if URL set), otherwise use local password
+  if (SCRIPT_URL) {
+    try {
+      const r = await post({ action: 'ping', password: pwd });
+      if (r.error) { showLoginError(); return; }
+    } catch (_) {}
+  }
+  // Fallback: local check
+  if (pwd !== ADMIN_PWD && SCRIPT_URL === '') {
+    showLoginError(); return;
+  }
+  localStorage.setItem('saram_admin_auth', 'true');
+  localStorage.setItem('saram_admin_pwd', pwd);
+  ADMIN_PWD = pwd;
+  showApp();
+}
+
+function showLoginError() {
+  const el = document.getElementById('login-error');
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3000);
+}
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  loadDashboard();
+  loadPosts();
+  loadEvents();
+}
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+  localStorage.removeItem('saram_admin_auth');
+  location.reload();
+});
+
+// ── NAVIGATION ─────────────────────────────────────
+const sectionTitles = {
+  dashboard: 'Dashboard',
+  posts:     'பதிவுகள் நிர்வாகம்',
+  'ai-studio': 'AI Studio',
+  events:    'நிகழ்வுகள்',
+  import:    'இறக்குமதி',
+  settings:  'அமைப்புகள்',
+};
+
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', () => switchSection(btn.dataset.section));
+});
+
+function switchSection(name) {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.nav-item[data-section="${name}"]`)?.classList.add('active');
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + name)?.classList.add('active');
+  document.getElementById('topbar-title').textContent = sectionTitles[name] || name;
+  if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+}
+
+document.getElementById('menu-toggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+// ── API ────────────────────────────────────────────
+async function get(action) {
+  if (!SCRIPT_URL) throw new Error('Apps Script URL நிர்ணயிக்கவில்லை');
+  const url = `${SCRIPT_URL}?action=${action}&_=${Date.now()}`;
+  const r   = await fetch(url);
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
+async function post(body) {
+  if (!SCRIPT_URL) throw new Error('Apps Script URL நிர்ணயிக்கவில்லை');
+  const r = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ ...body, password: ADMIN_PWD }),
+  });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
+async function safeGet(action) {
+  try { return await get(action); } catch (e) { console.warn(action, e); return null; }
+}
+
+// ── CONNECTION STATUS ──────────────────────────────
+async function checkConnection() {
+  const dot   = document.getElementById('conn-dot');
+  const label = document.getElementById('conn-label');
+  if (!SCRIPT_URL) {
+    dot.classList.remove('connected');
+    label.textContent = 'இணைக்கவில்லை';
+    return false;
+  }
+  try {
+    const r = await get('healthCheck');
+    if (r?.status === 'ok') {
+      dot.classList.add('connected');
+      label.textContent = 'இணைக்கப்பட்டது';
+      return true;
+    }
+  } catch (_) {}
+  dot.classList.remove('connected');
+  label.textContent = 'பிழை';
+  return false;
+}
+
+// ── DASHBOARD ──────────────────────────────────────
+async function loadDashboard() {
+  checkConnection();
+  // Local DB count
+  document.getElementById('stat-local').textContent = typeof CONTENT_DB !== 'undefined' ? CONTENT_DB.length : '—';
+
+  if (!SCRIPT_URL) return;
+  const stats = await safeGet('getStats');
+  if (stats) {
+    document.getElementById('stat-posts').textContent  = stats.posts   ?? '—';
+    document.getElementById('stat-events').textContent = stats.events  ?? '—';
+    document.getElementById('stat-ai').textContent     = stats.ai_images ?? '—';
+    if (stats.today) {
+      document.getElementById('today-event-title').textContent = stats.today.title_ta || stats.today.title_en || '—';
+      document.getElementById('today-event-desc').textContent  = stats.today.description || '';
+    }
+  }
+
+  // Recent posts table
+  if (allPosts.length) renderRecentPosts();
+}
+
+function renderRecentPosts() {
+  const recent = allPosts.slice(0, 5);
+  const wrap   = document.getElementById('recent-posts-wrap');
+  wrap.innerHTML = buildPostsTable(recent);
+}
+
+// ── POSTS ──────────────────────────────────────────
+async function loadPosts() {
+  if (!SCRIPT_URL) return;
+  const data = await safeGet('getPosts');
+  if (data?.posts) {
+    allPosts = data.posts;
+    renderPostsTable();
+    populatePostDropdown();
+  }
+}
+
+function renderPostsTable(page = 1) {
+  currentPage = page;
+  const query = document.getElementById('posts-search')?.value.toLowerCase() || '';
+  const filtered = allPosts.filter(p =>
+    !query ||
+    (p.title    || '').toLowerCase().includes(query) ||
+    (p.category || '').toLowerCase().includes(query) ||
+    (p.source   || '').toLowerCase().includes(query)
+  );
+  const start = (page - 1) * PAGE_SIZE;
+  const slice = filtered.slice(start, start + PAGE_SIZE);
+  const wrap  = document.getElementById('posts-table-wrap');
+
+  if (!filtered.length) {
+    wrap.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔍</div><p>பதிவுகள் இல்லை</p></div>';
+    document.getElementById('posts-pagination').innerHTML = '';
+    return;
+  }
+  wrap.innerHTML = buildPostsTable(slice);
+  renderPagination(filtered.length, page);
+}
+
+function buildPostsTable(posts) {
+  if (!posts.length) return '<div class="empty-state"><div class="empty-state-icon">📭</div><p>பதிவுகள் இல்லை</p></div>';
+  const rows = posts.map(p => `
+    <tr>
+      <td style="font-weight:700;color:var(--maroon)">#${p.id}</td>
+      <td class="td-title">${p.title || '—'}</td>
+      <td><span class="td-cat">${getCatEmoji(p.category)} ${p.category}</span></td>
+      <td>${(p.verse || []).join(' ').slice(0, 40)}…</td>
+      <td>${p.ai_generated ? '<span class="td-ai">AI</span>' : ''}</td>
+      <td class="td-actions">
+        <button class="btn btn-outline btn-sm" onclick="editPost(${p.id})">✏️ திருத்து</button>
+        <button class="btn btn-gold btn-sm" onclick="genImgForPost(${p.id})">🤖 AI படம்</button>
+        <button class="btn btn-danger btn-sm" onclick="deletePost(${p.id})">🗑️</button>
+      </td>
+    </tr>`).join('');
+  return `<table>
+    <thead><tr><th>#</th><th>தலைப்பு</th><th>வகை</th><th>வரிகள்</th><th>AI</th><th>செயல்கள்</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+function renderPagination(total, current) {
+  const pages = Math.ceil(total / PAGE_SIZE);
+  if (pages <= 1) { document.getElementById('posts-pagination').innerHTML = ''; return; }
+  let html = '';
+  for (let i = 1; i <= pages; i++) {
+    html += `<button class="page-btn ${i === current ? 'active' : ''}" onclick="renderPostsTable(${i})">${i}</button>`;
+  }
+  document.getElementById('posts-pagination').innerHTML = html;
+}
+
+function getCatEmoji(cat) {
+  const m = { kural:'📜', bakthi:'🕉️', paadal:'🎵', oakkam:'⚡', vaazhkai:'🌱', architecture:'🏛️', festival:'🎉', dance:'💃', cuisine:'🍛', temple_art:'🎨' };
+  return m[cat] || '📝';
+}
+
+// Add post
+document.getElementById('add-post-btn').addEventListener('click', () => openPostModal());
+
+function openPostModal(post = null) {
+  editingPost = post;
+  document.getElementById('post-modal-title').textContent = post ? 'பதிவு திருத்து' : 'புதிய பதிவு';
+  document.getElementById('post-modal-id').value          = post?.id || '';
+  document.getElementById('post-cat').value               = post?.category || 'kural';
+  document.getElementById('post-title').value             = post?.title || '';
+  document.getElementById('post-verse').value             = post ? (Array.isArray(post.verse) ? post.verse.join('||') : post.verse) : '';
+  document.getElementById('post-explanation').value       = post?.explanation || '';
+  document.getElementById('post-source').value            = post?.source || '';
+  document.getElementById('post-tags').value              = post ? (Array.isArray(post.tags) ? post.tags.join(',') : post.tags) : '';
+  document.getElementById('post-image').value             = post?.image_url || '';
+  document.getElementById('post-modal-overlay').classList.add('open');
+}
+
+function closePostModal() {
+  document.getElementById('post-modal-overlay').classList.remove('open');
+  editingPost = null;
+}
+
+document.getElementById('post-save-btn').addEventListener('click', async () => {
+  const id = document.getElementById('post-modal-id').value;
+  const postData = {
+    id:          id ? Number(id) : undefined,
+    category:    document.getElementById('post-cat').value,
+    title:       document.getElementById('post-title').value,
+    type:        'text',
+    verse:       document.getElementById('post-verse').value.split('||').map(s => s.trim()),
+    explanation: document.getElementById('post-explanation').value,
+    source:      document.getElementById('post-source').value,
+    tags:        document.getElementById('post-tags').value.split(',').map(s => s.trim()),
+    image_url:   document.getElementById('post-image').value,
+  };
+  try {
+    const r = id
+      ? await post({ action: 'updatePost', post: postData })
+      : await post({ action: 'addPost',    post: postData });
+    if (r.error) throw new Error(r.error);
+    showToast(id ? '✅ பதிவு புதுப்பிக்கப்பட்டது!' : '✅ பதிவு சேர்க்கப்பட்டது!');
+    closePostModal();
+    await loadPosts();
+  } catch (e) {
+    showToast('❌ பிழை: ' + e.message);
+  }
+});
+
+function editPost(id) {
+  const p = allPosts.find(x => x.id === id);
+  if (p) openPostModal(p);
+}
+
+async function deletePost(id) {
+  if (!confirm(`பதிவு #${id} நீக்கவா?`)) return;
+  try {
+    const r = await post({ action: 'deletePost', id });
+    if (r.error) throw new Error(r.error);
+    showToast('🗑️ பதிவு நீக்கப்பட்டது');
+    await loadPosts();
+  } catch (e) {
+    showToast('❌ ' + e.message);
+  }
+}
+
+document.getElementById('posts-search').addEventListener('input', () => renderPostsTable(1));
+document.getElementById('posts-refresh-btn').addEventListener('click', loadPosts);
+
+function populatePostDropdown() {
+  const sel = document.getElementById('ai-save-post');
+  sel.innerHTML = '<option value="">— பதிவு தேர்வு —</option>' +
+    allPosts.map(p => `<option value="${p.id}">#${p.id} ${p.title || p.category}</option>`).join('');
+}
+
+// ── AI STUDIO ──────────────────────────────────────
+document.getElementById('ai-generate-btn').addEventListener('click', generateAIImage);
+
+async function generateAIImage() {
+  const verse  = document.getElementById('ai-verse-input').value.trim();
+  const style  = document.getElementById('ai-style-select').value;
+  const saveTo = document.getElementById('ai-save-post').value;
+  if (!verse) { showToast('⚠️ உரை உள்ளிடவும்'); return; }
+
+  setGenerating(true);
+  try {
+    const r = await post({ action: 'generateImage', text: verse, style, save_to_post: saveTo || undefined });
+    if (r.error) throw new Error(r.error);
+    showAIResult(r.image_url);
+    if (saveTo) { showToast('✅ படம் சேர்க்கப்பட்டது!'); await loadPosts(); }
+    else showToast('✅ படம் உருவாக்கப்பட்டது!');
+  } catch (e) {
+    showToast('❌ ' + e.message);
+  } finally {
+    setGenerating(false);
+  }
+}
+
+document.getElementById('ai-caption-btn').addEventListener('click', async () => {
+  const verse = document.getElementById('ai-verse-input').value.trim();
+  if (!verse) { showToast('⚠️ உரை உள்ளிடவும்'); return;  }
+  const btn = document.getElementById('ai-caption-btn');
+  btn.disabled = true; btn.textContent = '…';
+  try {
+    const r = await post({ action: 'generateCaption', verse, lang: 'ta' });
+    if (r.error) throw new Error(r.error);
+    const el = document.getElementById('ai-caption-result');
+    el.textContent = r.caption;
+    el.style.display = 'block';
+  } catch (e) {
+    showToast('❌ ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '📝 விளக்கம்';
+  }
+});
+
+function setGenerating(on) {
+  document.getElementById('generating-overlay').style.display = on ? 'flex' : 'none';
+  document.getElementById('ai-generate-btn').disabled = on;
+}
+
+function showAIResult(url) {
+  aiResultUrl = url;
+  const img = document.getElementById('ai-result-img');
+  img.src   = url;
+  img.style.display  = 'block';
+  document.getElementById('ai-placeholder').style.display = 'none';
+  document.getElementById('ai-img-actions').style.display = 'flex';
+  document.getElementById('ai-img-url').textContent = url;
+  document.getElementById('ai-img-url').style.display = 'block';
+}
+
+document.getElementById('ai-download-btn')?.addEventListener('click', () => {
+  if (!aiResultUrl) return;
+  const a = document.createElement('a');
+  a.href     = aiResultUrl;
+  a.download = 'saram_ai_image.png';
+  a.target   = '_blank';
+  a.click();
+});
+
+document.getElementById('ai-use-btn')?.addEventListener('click', () => {
+  if (!aiResultUrl) return;
+  document.getElementById('post-image').value = aiResultUrl;
+  showToast('✅ படம் URL பதிவு வடிவத்தில் நிரப்பப்பட்டது');
+});
+
+document.getElementById('post-generate-img-btn').addEventListener('click', () => {
+  const verse = document.getElementById('post-verse').value;
+  closePostModal();
+  switchSection('ai-studio');
+  document.getElementById('ai-verse-input').value = verse;
+  if (editingPost) {
+    const sel = document.getElementById('ai-save-post');
+    sel.value = editingPost.id;
+  }
+});
+
+function genImgForPost(id) {
+  const p = allPosts.find(x => x.id === id);
+  switchSection('ai-studio');
+  if (p) {
+    document.getElementById('ai-verse-input').value = Array.isArray(p.verse) ? p.verse.join(' ') : (p.verse || '');
+    document.getElementById('ai-save-post').value   = p.id;
+  }
+}
+
+// ── EVENTS ─────────────────────────────────────────
+async function loadEvents() {
+  if (!SCRIPT_URL) return;
+  const data = await safeGet('getEvents');
+  if (data?.events) {
+    allEvents = data.events;
+    renderEventsList();
+  }
+}
+
+function renderEventsList() {
+  const list    = document.getElementById('events-list');
+  const today   = new Date();
+  const todayMM = String(today.getMonth()+1).padStart(2,'0');
+  const todayDD = String(today.getDate()).padStart(2,'0');
+  const todayStr = `${todayMM}-${todayDD}`;
+
+  if (!allEvents.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📅</div><p>நிகழ்வுகள் இல்லை</p></div>';
+    return;
+  }
+
+  list.innerHTML = allEvents.map(e => `
+    <div class="event-card ${e.date === todayStr ? 'today' : ''}">
+      <div>
+        <div class="event-date">${e.date || e.day_of_week || '—'} ${e.date === todayStr ? '⭐ இன்று' : ''}</div>
+      </div>
+      <div class="event-body">
+        <div class="event-title">${getCatEmoji(e.category)} ${e.title_ta || ''}</div>
+        <div class="event-desc">${e.description || ''}</div>
+      </div>
+      <div class="event-actions">
+        <button class="btn btn-outline btn-sm" onclick="editEvent('${e.date}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.date}')">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+document.getElementById('add-event-btn').addEventListener('click', () => openEventModal());
+
+function openEventModal(event = null) {
+  document.getElementById('event-modal-title').textContent = event ? 'நிகழ்வு திருத்து' : 'புதிய நிகழ்வு';
+  document.getElementById('event-date').value       = event?.date || '';
+  document.getElementById('event-cat').value        = event?.category || 'festival';
+  document.getElementById('event-title-ta').value   = event?.title_ta || '';
+  document.getElementById('event-title-en').value   = event?.title_en || '';
+  document.getElementById('event-desc').value       = event?.description || '';
+  document.getElementById('event-ai-prompt').value  = event?.ai_prompt || '';
+  document.getElementById('event-modal-overlay').classList.add('open');
+}
+
+function closeEventModal() {
+  document.getElementById('event-modal-overlay').classList.remove('open');
+}
+
+function editEvent(date) {
+  const e = allEvents.find(x => x.date === date);
+  if (e) openEventModal(e);
+}
+
+async function deleteEvent(date) {
+  if (!confirm(`நிகழ்வு ${date} நீக்கவா?`)) return;
+  try {
+    const r = await post({ action: 'deleteEvent', id: date });
+    if (r.error) throw new Error(r.error);
+    showToast('🗑️ நிகழ்வு நீக்கப்பட்டது');
+    await loadEvents();
+  } catch (e) {
+    showToast('❌ ' + e.message);
+  }
+}
+
+document.getElementById('event-save-btn').addEventListener('click', async () => {
+  const eventData = {
+    date:        document.getElementById('event-date').value.trim(),
+    day_of_week: '',
+    category:    document.getElementById('event-cat').value,
+    title_ta:    document.getElementById('event-title-ta').value.trim(),
+    title_en:    document.getElementById('event-title-en').value.trim(),
+    description: document.getElementById('event-desc').value.trim(),
+    ai_prompt:   document.getElementById('event-ai-prompt').value.trim(),
+    active:      true,
+  };
+  if (!eventData.date) { showToast('⚠️ தேதி உள்ளிடவும்'); return; }
+  try {
+    const r = await post({ action: 'updateEvent', event: eventData });
+    if (r.error) throw new Error(r.error);
+    showToast('✅ நிகழ்வு சேமிக்கப்பட்டது!');
+    closeEventModal();
+    await loadEvents();
+  } catch (e) {
+    showToast('❌ ' + e.message);
+  }
+});
+
+// ── IMPORT ─────────────────────────────────────────
+document.getElementById('import-local-btn').addEventListener('click', importLocalDB);
+
+async function importLocalDB() {
+  if (typeof CONTENT_DB === 'undefined') {
+    showImportResult('local', false, 'CONTENT_DB இங்கே ஏற்றப்படவில்லை. admin.html-ஐ index.html-ல் iframe மூலம் சேர்க்கவும் அல்லது app.js include செய்யவும்.');
+    return;
+  }
+  const btn = document.getElementById('import-local-btn');
+  btn.disabled = true; btn.textContent = 'இறக்குகிறோம்…';
+  try {
+    const r = await post({ action: 'batchImport', posts: CONTENT_DB });
+    if (r.error) throw new Error(r.error);
+    showImportResult('local', true, `✅ ${r.imported} பதிவுகள் இறக்குமதி செய்யப்பட்டன!`);
+    await loadPosts();
+  } catch (e) {
+    showImportResult('local', false, '❌ ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '📤 Local DB இறக்குமதி';
+  }
+}
+
+document.getElementById('import-json-btn').addEventListener('click', async () => {
+  const raw = document.getElementById('import-json-input').value.trim();
+  if (!raw) { showToast('⚠️ JSON உள்ளிடவும்'); return; }
+  let parsed;
+  try { parsed = JSON.parse(raw); } catch (_) { showImportResult('json', false, '❌ JSON வடிவம் தவறு'); return; }
+  if (!Array.isArray(parsed)) { showImportResult('json', false, '❌ JSON array வேண்டும் [...]'); return; }
+  try {
+    const r = await post({ action: 'batchImport', posts: parsed });
+    if (r.error) throw new Error(r.error);
+    showImportResult('json', true, `✅ ${r.imported} பதிவுகள் இறக்குமதி!`);
+    await loadPosts();
+  } catch (e) {
+    showImportResult('json', false, '❌ ' + e.message);
+  }
+});
+
+function showImportResult(which, ok, msg) {
+  const el = document.getElementById(`import-${which}-result`);
+  el.className = `import-result ${ok ? 'success' : 'error'}`;
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 6000);
+}
+
+// ── SETTINGS ───────────────────────────────────────
+document.getElementById('settings-url').value   = SCRIPT_URL;
+document.getElementById('settings-pwd').value   = '';
+document.getElementById('settings-style').value = IMG_STYLE;
+
+document.getElementById('settings-save-btn').addEventListener('click', () => {
+  const url   = document.getElementById('settings-url').value.trim();
+  const pwd   = document.getElementById('settings-pwd').value.trim();
+  const style = document.getElementById('settings-style').value;
+  if (url)   { SCRIPT_URL = url;   localStorage.setItem('saram_admin_url',   url);   }
+  if (pwd)   { ADMIN_PWD  = pwd;   localStorage.setItem('saram_admin_pwd',   pwd);   }
+  if (style) { IMG_STYLE  = style; localStorage.setItem('saram_img_style', style); }
+  showToast('✅ அமைப்புகள் சேமிக்கப்பட்டன!');
+  checkConnection();
+  loadDashboard();
+});
+
+document.getElementById('settings-test-btn').addEventListener('click', async () => {
+  const el = document.getElementById('settings-test-result');
+  el.style.display = 'block'; el.textContent = 'சோதிக்கிறோம்…';
+  const ok = await checkConnection();
+  el.textContent = ok ? '✅ இணைப்பு வெற்றிகரமாக சோதிக்கப்பட்டது!' : '❌ இணைப்பு தோல்வி — URL சரிபார்க்கவும்';
+  el.style.color = ok ? 'var(--success)' : 'var(--error)';
+});
+
+document.getElementById('settings-setup-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('settings-setup-btn');
+  btn.disabled = true; btn.textContent = 'அமைக்கிறோம்…';
+  try {
+    const r = await post({ action: 'setupSheets' });
+    if (r.error) throw new Error(r.error);
+    showToast('✅ Sheets அமைக்கப்பட்டன: ' + (r.sheets || []).join(', '));
+  } catch (e) {
+    showToast('❌ ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '⚙️ Sheets அமை';
+  }
+});
+
+// ── TOAST ──────────────────────────────────────────
+let _toastT;
+function showToast(msg) {
+  const el = document.getElementById('admin-toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_toastT);
+  _toastT = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ── INIT ───────────────────────────────────────────
+checkAuth();
+</script>
+</body>
+</html>

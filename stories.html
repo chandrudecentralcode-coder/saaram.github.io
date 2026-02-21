@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+  <meta name="theme-color" content="#1A0500"/>
+  <title>சாரம் — கதைகள்</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --gold-lt: #E8C97A;
+      --f: 'Hind Madurai','Noto Serif Tamil','Latha',serif;
+      --spring: cubic-bezier(.34,1.56,.64,1);
+      --ease: cubic-bezier(.4,0,.2,1);
+    }
+
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+    html,body { height:100%; overflow:hidden; }
+
+    body {
+      font-family: var(--f), sans-serif;
+      background: #000;
+      color: #fff;
+      position: relative;
+      user-select: none;
+    }
+
+    /* ── Story Container ── */
+    #story-container {
+      position: relative;
+      width: 100%; height: 100dvh;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Background gradient fill ── */
+    #story-bg {
+      position: absolute; inset: 0; z-index: 0;
+      transition: background 0.4s ease;
+    }
+    #story-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 80% 20%, rgba(201,168,76,.12) 0%, transparent 60%);
+    }
+
+    /* ── Progress Bars ── */
+    #progress-bars {
+      position: relative; z-index: 10;
+      display: flex; gap: 4px;
+      padding: 12px 12px 6px;
+      padding-top: max(12px, env(safe-area-inset-top, 12px));
+    }
+    .progress-seg {
+      flex: 1; height: 3px; border-radius: 2px;
+      background: rgba(255,255,255,.3);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0%;
+      background: rgba(255,255,255,.9);
+      border-radius: 2px;
+    }
+    .progress-seg.done .progress-fill { width: 100%; }
+    .progress-seg.active .progress-fill {
+      animation: prog-fill var(--duration, 7s) linear forwards;
+    }
+    @keyframes prog-fill { from { width: 0% } to { width: 100% } }
+
+    /* ── Top Bar ── */
+    #top-bar {
+      position: relative; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 4px 14px 10px;
+    }
+    #story-brand {
+      display: flex; align-items: center; gap: 8px;
+    }
+    #story-brand .lamp { font-size: 22px; }
+    #story-brand .brand-text {
+      font-size: 17px; font-weight: 700;
+      color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,.5);
+    }
+    #story-brand .brand-sub {
+      font-size: 10px; color: rgba(255,255,255,.55);
+      letter-spacing: .08em; text-transform: uppercase;
+    }
+    #close-btn, #share-btn {
+      width: 38px; height: 38px; border-radius: 50%; border: none; cursor: pointer;
+      background: rgba(255,255,255,.18); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: #fff;
+      transition: background .2s;
+    }
+    #close-btn:hover, #share-btn:hover { background: rgba(255,255,255,.28); }
+    #top-actions { display: flex; gap: 8px; }
+
+    /* ── Story Content ── */
+    #story-content {
+      position: relative; z-index: 5;
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 24px 28px 40px;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .story-cat-badge {
+      font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--gold-lt);
+      background: rgba(201,168,76,.18);
+      border: 1px solid rgba(201,168,76,.3);
+      border-radius: 100px;
+      padding: 5px 16px;
+      margin-bottom: 24px;
+      display: inline-block;
+    }
+
+    .story-lamp-big {
+      font-size: 52px;
+      margin-bottom: 20px;
+      animation: lamp-fl 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 14px rgba(201,168,76,.6));
+    }
+    @keyframes lamp-fl {
+      0%,100% { transform: rotate(-3deg) scale(1); opacity: 1; }
+      25%     { transform: rotate(2deg) scale(1.06); opacity: .9; }
+      50%     { transform: rotate(-1deg) scale(.97); }
+      75%     { transform: rotate(3deg) scale(1.04); opacity: .95; }
+    }
+
+    .story-verse {
+      font-size: 24px; font-weight: 700;
+      line-height: 1.85; color: #FFF8EF;
+      text-shadow: 0 3px 16px rgba(0,0,0,.6);
+      margin-bottom: 18px;
+      max-width: 340px;
+    }
+    .story-verse span { display: block; }
+
+    .story-divider {
+      width: 60%; height: 1px; margin: 0 auto 18px;
+      background: linear-gradient(to right, transparent, rgba(201,168,76,.5), transparent);
+    }
+
+    .story-explanation {
+      font-size: 15px; color: rgba(255,248,239,.8);
+      line-height: 1.9; max-width: 320px;
+      text-shadow: 0 2px 10px rgba(0,0,0,.5);
+      margin-bottom: 16px;
+    }
+
+    .story-source {
+      font-size: 12px; color: rgba(201,168,76,.75);
+      letter-spacing: .04em;
+    }
+
+    /* ── Story Counter ── */
+    #story-counter {
+      position: relative; z-index: 10;
+      text-align: center;
+      font-size: 11px; color: rgba(255,255,255,.35);
+      letter-spacing: .1em; text-transform: uppercase;
+      padding-bottom: 14px;
+      padding-bottom: max(14px, env(safe-area-inset-bottom, 14px));
+    }
+
+    /* ── Tap Zones ── */
+    #tap-prev, #tap-next {
+      position: absolute; top: 0; bottom: 0; z-index: 8;
+      width: 40%; cursor: pointer;
+    }
+    #tap-prev { left: 0; }
+    #tap-next { right: 0; }
+
+    /* ── Pause Indicator ── */
+    #pause-indicator {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      z-index: 20;
+      font-size: 52px;
+      opacity: 0; pointer-events: none;
+      transition: opacity .2s;
+    }
+    #pause-indicator.visible { opacity: 1; }
+
+    /* ── Slide animations ── */
+    #story-content.slide-in-right {
+      animation: slide-r .3s var(--ease) both;
+    }
+    #story-content.slide-in-left {
+      animation: slide-l .3s var(--ease) both;
+    }
+    @keyframes slide-r {
+      from { opacity:0; transform: translateX(48px); }
+      to   { opacity:1; transform: translateX(0); }
+    }
+    @keyframes slide-l {
+      from { opacity:0; transform: translateX(-48px); }
+      to   { opacity:1; transform: translateX(0); }
+    }
+
+    /* ── End screen ── */
+    #end-screen {
+      position: absolute; inset: 0; z-index: 50;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(10,3,0,.92); backdrop-filter: blur(8px);
+      display: none;
+    }
+    #end-screen.show { display: flex; }
+    #end-screen .end-lamp { font-size: 64px; margin-bottom: 20px; animation: lamp-fl 4s ease-in-out infinite; }
+    #end-screen h2 { font-size: 24px; font-weight: 700; color: #FFF8EF; margin-bottom: 10px; }
+    #end-screen p  { font-size: 15px; color: rgba(255,248,239,.65); margin-bottom: 32px; text-align: center; padding: 0 32px; line-height: 1.7; }
+    .end-btn {
+      padding: 14px 36px; border-radius: 100px; border: none; cursor: pointer;
+      font-size: 15px; font-family: var(--f); font-weight: 700;
+      transition: all .2s var(--spring);
+    }
+    .end-btn-home {
+      background: linear-gradient(135deg, #7B0000, #A0522D);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(123,0,0,.45);
+      margin-bottom: 12px;
+    }
+    .end-btn-home:hover { transform: scale(1.04); }
+    .end-btn-restart {
+      background: rgba(201,168,76,.15);
+      border: 1.5px solid rgba(201,168,76,.35);
+      color: var(--gold-lt);
+    }
+    .end-btn-restart:hover { background: rgba(201,168,76,.25); }
+  </style>
+</head>
+<body>
+
+<div id="story-container">
+
+  <!-- Background -->
+  <div id="story-bg"></div>
+
+  <!-- Progress Bars -->
+  <div id="progress-bars"></div>
+
+  <!-- Top Bar -->
+  <div id="top-bar">
+    <div id="story-brand">
+      <span class="lamp">🪔</span>
+      <div>
+        <div class="brand-text">சாரம்</div>
+        <div class="brand-sub">Tamil Wisdom</div>
+      </div>
+    </div>
+    <div id="top-actions">
+      <button id="share-btn" title="Share">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
+      <button id="close-btn" title="Close">✕</button>
+    </div>
+  </div>
+
+  <!-- Story Content -->
+  <div id="story-content">
+    <div class="story-cat-badge" id="story-cat-badge"></div>
+    <div class="story-lamp-big">🪔</div>
+    <div class="story-verse" id="story-verse"></div>
+    <div class="story-divider"></div>
+    <div class="story-explanation" id="story-explanation"></div>
+    <div class="story-source" id="story-source"></div>
+  </div>
+
+  <!-- Counter -->
+  <div id="story-counter"></div>
+
+  <!-- Tap zones -->
+  <div id="tap-prev"></div>
+  <div id="tap-next"></div>
+
+  <!-- Hold pause indicator -->
+  <div id="pause-indicator">⏸</div>
+
+  <!-- End Screen -->
+  <div id="end-screen">
+    <div class="end-lamp">🪔</div>
+    <h2>அனைத்தும் படித்தீர்கள்!</h2>
+    <p>நாளை மேலும் ஞானம் காத்திருக்கும்<br>சாரம் — Tamil Wisdom</p>
+    <button class="end-btn end-btn-home" id="end-home-btn">முகப்புக்கு செல்</button>
+    <button class="end-btn end-btn-restart" id="end-restart-btn">மீண்டும் பார்</button>
+  </div>
+
+</div>
+
+<script>
+  /* ── Data ── */
+  const STORY_BG = {
+    kural:    ['#4A0000','#2A0500'],
+    bakthi:   ['#2A1560','#100A35'],
+    paadal:   ['#083A2A','#041A12'],
+    oakkam:   ['#4A2800','#241400'],
+    vaazhkai: ['#162816','#080F08'],
+  };
+
+  const CAT_LABELS = {
+    kural:'📜 குறள்', bakthi:'🕉️ பக்தி', paadal:'🎵 பாடல்',
+    oakkam:'⚡ ஊக்கம்', vaazhkai:'🌱 வாழ்க்கை',
+  };
+
+  /* Default fallback stories if localStorage is empty */
+  const DEFAULT_STORIES = [
+    { category:'kural', verse:['அகர முதல எழுத்தெல்லாம் ஆதி','பகவன் முதற்றே உலகு'],
+      explanation:'அகரம் எழுத்துக்களுக்கு முதன்மை ஆவது போல், கடவுள் உலகுக்கு முதன்மை ஆவான்.',
+      source:'திருக்குறள் 1 — கடவுள் வாழ்த்து' },
+    { category:'oakkam', verse:['வினைத்திட்பம் என்பது ஒருவன் மனத்திட்பம்','மற்றையஃது வெற்றி தரும்'],
+      explanation:'செயலின் உறுதி என்பது மனத்தின் உறுதியே. மனவுறுதி மட்டுமே வெற்றியை அளிக்கும்.',
+      source:'திருவள்ளுவர் — குறள் 664' },
+    { category:'bakthi', verse:['சிவாய நம என்னும் சித்தர் வேலும்','அவாவினை யறுக்கும் அருமருந்தே'],
+      explanation:'சிவாய நம என்னும் மந்திரம் ஆசையை நீக்கும் அருமருந்தாகும்.',
+      source:'மாணிக்கவாசகர் — திருவாசகம்' },
+    { category:'vaazhkai', verse:['அன்பும் அறனும் உடைத்தாயின் இல்வாழ்க்கை','பண்பும் பயனும் அது'],
+      explanation:'அன்பும் அறமும் உடையதாக இருந்தால் இல்வாழ்க்கையின் பயனும் சிறப்பும் அதுவே.',
+      source:'திருவள்ளுவர் — குறள் 45' },
+    { category:'kural', verse:['தீயினால் சுட்டபுண் உள்ளாறும் ஆறாதே','நாவினால் சுட்ட வடு'],
+      explanation:'தீயால் சுட்ட புண் குணமாகும்; நாவால் சுட்ட வடு என்றும் ஆறாது.',
+      source:'திருவள்ளுவர் — குறள் 129' },
+  ];
+
+  /* ── Load stories from localStorage ── */
+  let stories     = DEFAULT_STORIES;
+  let startIndex  = 0;
+  const AUTO_MS   = 7000;
+
+  try {
+    const stored = localStorage.getItem('saram_storyData');
+    if (stored) stories = JSON.parse(stored);
+    startIndex = parseInt(localStorage.getItem('saram_storyStart') || '0') || 0;
+  } catch (_) {}
+
+  startIndex = Math.max(0, Math.min(startIndex, stories.length - 1));
+
+  /* ── State ── */
+  let currentIndex = startIndex;
+  let paused       = false;
+  let holdTimer    = null;
+  let autoTimer    = null;
+  let progAnim     = null;  // setInterval handle
+
+  /* ── DOM refs ── */
+  const bg          = document.getElementById('story-bg');
+  const progressBar = document.getElementById('progress-bars');
+  const storyContent = document.getElementById('story-content');
+  const catBadge    = document.getElementById('story-cat-badge');
+  const verseEl     = document.getElementById('story-verse');
+  const expEl       = document.getElementById('story-explanation');
+  const srcEl       = document.getElementById('story-source');
+  const counterEl   = document.getElementById('story-counter');
+  const pauseInd    = document.getElementById('pause-indicator');
+  const endScreen   = document.getElementById('end-screen');
+
+  /* ── Build progress bars ── */
+  function buildProgressBars() {
+    progressBar.innerHTML = stories.map((_, i) =>
+      `<div class="progress-seg${i < currentIndex ? ' done' : ''}" id="seg-${i}">
+        <div class="progress-fill"></div>
+      </div>`
+    ).join('');
+  }
+
+  /* ── Render story ── */
+  function renderStory(index, direction = 'right') {
+    const story = stories[index];
+    if (!story) return;
+
+    /* Background */
+    const colors = STORY_BG[story.category] || ['#1A0500','#0A0200'];
+    bg.style.background = `linear-gradient(145deg, ${colors[0]} 0%, ${colors[1]} 100%)`;
+
+    /* Category badge */
+    catBadge.textContent = CAT_LABELS[story.category] || story.category;
+
+    /* Verse */
+    verseEl.innerHTML = (story.verse || []).map(l => `<span>${l}</span>`).join('');
+
+    /* Explanation & source */
+    expEl.textContent = story.explanation || '';
+    srcEl.textContent = `— ${story.source || ''}`;
+
+    /* Counter */
+    counterEl.textContent = `${index + 1} / ${stories.length}`;
+
+    /* Slide animation */
+    storyContent.classList.remove('slide-in-right','slide-in-left');
+    void storyContent.offsetWidth; // reflow
+    storyContent.classList.add(direction === 'right' ? 'slide-in-right' : 'slide-in-left');
+
+    /* Update progress bars */
+    stories.forEach((_, i) => {
+      const seg  = document.getElementById(`seg-${i}`);
+      const fill = seg.querySelector('.progress-fill');
+      seg.classList.remove('done','active');
+      fill.style.width = '0%';
+      fill.style.animation = 'none';
+      if (i < index) {
+        seg.classList.add('done');
+        fill.style.width = '100%';
+      } else if (i === index) {
+        seg.classList.add('active');
+        void fill.offsetWidth; // reflow
+        fill.style.animation = `prog-fill ${AUTO_MS}ms linear forwards`;
+      }
+    });
+  }
+
+  /* ── Navigation ── */
+  function goTo(index, direction) {
+    clearAuto();
+    if (index >= stories.length) { showEnd(); return; }
+    if (index < 0) { goHome(); return; }
+    currentIndex = index;
+    renderStory(currentIndex, direction);
+    if (!paused) startAuto();
+  }
+
+  function goNext() { goTo(currentIndex + 1, 'right'); }
+  function goPrev() { goTo(currentIndex - 1, 'left'); }
+  function goHome() { window.location.href = 'index.html'; }
+
+  function showEnd() {
+    clearAuto();
+    // Complete last progress bar
+    const lastSeg  = document.getElementById(`seg-${stories.length - 1}`);
+    if (lastSeg) {
+      const fill = lastSeg.querySelector('.progress-fill');
+      fill.style.animation = 'none';
+      fill.style.width = '100%';
+      lastSeg.classList.remove('active');
+      lastSeg.classList.add('done');
+    }
+    endScreen.classList.add('show');
+  }
+
+  /* ── Auto-advance ── */
+  function startAuto() {
+    clearAuto();
+    autoTimer = setTimeout(goNext, AUTO_MS);
+  }
+
+  function clearAuto() {
+    clearTimeout(autoTimer);
+    autoTimer = null;
+  }
+
+  /* ── Pause / Resume ── */
+  function pauseStory() {
+    paused = true;
+    clearAuto();
+    pauseInd.classList.add('visible');
+    // Pause CSS animation by capturing computed width and freezing
+    const seg  = document.getElementById(`seg-${currentIndex}`);
+    const fill = seg?.querySelector('.progress-fill');
+    if (fill) {
+      const w = getComputedStyle(fill).width;
+      fill.style.animation = 'none';
+      fill.style.width = w;
+    }
+  }
+
+  function resumeStory() {
+    if (!paused) return;
+    paused = false;
+    pauseInd.classList.remove('visible');
+    // Resume remaining time approximation (re-start full timer from current)
+    const seg  = document.getElementById(`seg-${currentIndex}`);
+    const fill = seg?.querySelector('.progress-fill');
+    if (fill) {
+      const pct      = parseFloat(fill.style.width) / seg.offsetWidth;
+      const remaining = AUTO_MS * (1 - pct);
+      fill.style.animation = `prog-fill ${remaining}ms linear forwards`;
+      autoTimer = setTimeout(goNext, remaining);
+    } else {
+      startAuto();
+    }
+  }
+
+  /* ── Share current story ── */
+  function shareStory() {
+    const story = stories[currentIndex];
+    if (!story) return;
+    const text = `${(story.verse || []).join('\n')}\n— ${story.source || ''}\n\nசாரம் | Tamil Wisdom`;
+    if (navigator.share) {
+      navigator.share({ title:'சாரம் — Tamil Wisdom', text }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
+  }
+
+  /* ── Touch / Hold handling ── */
+  let touchStartX   = 0;
+  let touchStartY   = 0;
+  let touchStartT   = 0;
+  let isHolding     = false;
+
+  document.getElementById('tap-prev').addEventListener('pointerdown', e => {
+    e.preventDefault();
+    touchStartT = Date.now();
+    holdTimer = setTimeout(() => { isHolding = true; pauseStory(); }, 200);
+  });
+  document.getElementById('tap-next').addEventListener('pointerdown', e => {
+    e.preventDefault();
+    touchStartT = Date.now();
+    holdTimer = setTimeout(() => { isHolding = true; pauseStory(); }, 200);
+  });
+
+  ['tap-prev','tap-next'].forEach(id => {
+    document.getElementById(id).addEventListener('pointerup', e => {
+      clearTimeout(holdTimer);
+      if (isHolding) { isHolding = false; resumeStory(); return; }
+      if (Date.now() - touchStartT < 400) {
+        id === 'tap-prev' ? goPrev() : goNext();
+      }
+    });
+    document.getElementById(id).addEventListener('pointercancel', () => {
+      clearTimeout(holdTimer);
+      if (isHolding) { isHolding = false; resumeStory(); }
+    });
+  });
+
+  /* Swipe support */
+  document.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive:true });
+
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      dx < 0 ? goNext() : goPrev();
+    }
+  }, { passive:true });
+
+  /* ── Button events ── */
+  document.getElementById('close-btn').addEventListener('click', goHome);
+  document.getElementById('share-btn').addEventListener('click', shareStory);
+  document.getElementById('end-home-btn').addEventListener('click', goHome);
+  document.getElementById('end-restart-btn').addEventListener('click', () => {
+    endScreen.classList.remove('show');
+    goTo(0, 'right');
+  });
+
+  /* Keyboard support */
+  document.addEventListener('keydown', e => {
+    switch (e.key) {
+      case 'ArrowRight': goNext(); break;
+      case 'ArrowLeft':  goPrev(); break;
+      case 'Escape':     goHome(); break;
+      case ' ': e.preventDefault(); paused ? resumeStory() : pauseStory(); break;
+    }
+  });
+
+  /* ── Init ── */
+  buildProgressBars();
+  renderStory(currentIndex, 'right');
+  startAuto();
+
+  /* Clean up localStorage start index */
+  localStorage.removeItem('saram_storyStart');
+</script>
+</body>
+</html>
