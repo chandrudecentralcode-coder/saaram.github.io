@@ -10,8 +10,8 @@
 const CONFIG = {
   KURAL_API_BASE: 'https://getthirukkural.appspot.com/api/3.0',
   KURAL_API_KEY:  'qxgd9h6cgylam',
-  SHEETS_URL:     https://script.google.com/macros/s/AKfycbzPTWoV6lBMVh8o8GnzevMyPpksnvFKmwr4LHd7EtkzQAVwlUvjVXQYonwNhw1uZ4hp/exec,   // Paste your Apps Script Web App URL here after deploy
-  GEMINI_PROXY:   https://script.google.com/macros/s/AKfycbzPTWoV6lBMVh8o8GnzevMyPpksnvFKmwr4LHd7EtkzQAVwlUvjVXQYonwNhw1uZ4hp/exec,   // Same URL — Apps Script handles Gemini image generation
+  SHEETS_URL:     'https://script.google.com/macros/s/AKfycbzPTWoV6lBMVh8o8GnzevMyPpksnvFKmwr4LHd7EtkzQAVwlUvjVXQYonwNhw1uZ4hp/exec',   // Paste your Apps Script Web App URL here after deploy
+  GEMINI_PROXY:   'https://script.google.com/macros/s/AKfycbzPTWoV6lBMVh8o8GnzevMyPpksnvFKmwr4LHd7EtkzQAVwlUvjVXQYonwNhw1uZ4hp/exec',   // Same URL — Apps Script handles Gemini image generation
   POSTS_PER_PAGE: 6,
   MINDFUL_PAUSE_EVERY: 5,
   CACHE_VERSION: 'saram-v2',
