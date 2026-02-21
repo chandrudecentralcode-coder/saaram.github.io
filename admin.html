@@ -762,9 +762,16 @@ let aiResultUrl  = '';
 let editingPost  = null;
 
 // ── AUTH ───────────────────────────────────────────
+const DEFAULT_ADMIN_PWD = 'saram@admin2024';
+
 function checkAuth() {
   const stored = localStorage.getItem('saram_admin_auth');
-  if (stored === 'true') { showApp(); return; }
+  if (stored === 'true') {
+    // Restore password from localStorage
+    ADMIN_PWD = localStorage.getItem('saram_admin_pwd') || DEFAULT_ADMIN_PWD;
+    showApp();
+    return;
+  }
   document.getElementById('login-screen').style.display = 'flex';
 }
 
@@ -773,18 +780,30 @@ document.getElementById('login-pwd').addEventListener('keydown', e => { if (e.ke
 
 async function doLogin() {
   const pwd = document.getElementById('login-pwd').value.trim();
-  if (!pwd) return;
-  // Verify against Apps Script (if URL set), otherwise use local password
+  if (!pwd) { showLoginError(); return; }
+  
+  // If SCRIPT_URL is set, verify with server
   if (SCRIPT_URL) {
     try {
       const r = await post({ action: 'ping', password: pwd });
-      if (r.error) { showLoginError(); return; }
-    } catch (_) {}
+      if (r.error) {
+        showLoginError();
+        return;
+      }
+    } catch (e) {
+      // Server error - fall back to local password check
+      console.warn('Server ping failed, using local password check', e);
+    }
   }
-  // Fallback: local check
-  if (pwd !== ADMIN_PWD && SCRIPT_URL === '') {
-    showLoginError(); return;
+  
+  // Local password check (always verify)
+  const expectedPwd = ADMIN_PWD || DEFAULT_ADMIN_PWD;
+  if (pwd !== expectedPwd) {
+    showLoginError();
+    return;
   }
+  
+  // Success - save auth state
   localStorage.setItem('saram_admin_auth', 'true');
   localStorage.setItem('saram_admin_pwd', pwd);
   ADMIN_PWD = pwd;
